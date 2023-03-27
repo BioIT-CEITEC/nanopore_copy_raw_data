@@ -1,4 +1,17 @@
 {
-    "file_name":"reads",
+    "experiment_folders":["reads"],
     "reference_genome_path":"reference_genomes/mhv_virus/ncbi_dataset/data/GCF_003971785.1/GCF_003971785.1_ASM397178v1_genomic.fna",
+    "guppy_version":"ont-guppy-cpu",
+    //ont-guppy-cpu, ont-guppy (for gpu),
+    "data_type":"rna", 
+    //rna, dna,
+    "bps":70, 
+    //400, 260 , 70 (rna),
+    "quality":"fast", 
+    //fast, hac,
+    "flowcell":"None", 
+    //None, prom, mk1c,
+    // TODO add option to copy fastq files from online basecalling,
+    // TODO add script to download cpu vs gpu version of guppy,
 }
+

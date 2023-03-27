@@ -3,9 +3,12 @@ rule basecall:
         'all_reads/{reads_folder}'
     output:
         "basecalling_output/{reads_folder}/sequencing_summary.txt"
-
-    shell:
-        "./{guppy_version}/bin/guppy_basecaller --input_path all_reads/{wildcards.reads_folder} --save_path basecalling_output/{wildcards.reads_folder} --config ont-guppy-cpu/data/rna_r9.4.1_70bps_fast.cfg"
+    params: quality = quality,
+            bps = bps,
+            data_type = data_type,
+            guppy_version = guppy_version,
+            flowcell = flowcell,
+    script: "../wrappers/basecall/script.py"
 
 
 rule align:
@@ -13,7 +16,7 @@ rule align:
         "basecalling_output/{experiment}/sequencing_summary.txt"
     output:
         "alignment_output/{experiment}/alignment_summary.txt"
-    
-    shell:
-        "./{guppy_version}/bin/guppy_aligner --input_path basecalling_output/{wildcards.experiment}/ --save_path alignment_output/{wildcards.experiment}/ --align_ref {genome_path}"
+    params: genome_path = genome_path,
+            guppy_version = guppy_version,
+    script: "../wrappers/align/script.py"
 
