@@ -20,3 +20,6 @@ rule align:
             guppy_version = guppy_version,
     script: "../wrappers/align/script.py"
 
+
+rule SV_calling:
+    script: "../wrappers/SV_calling/script.py"
