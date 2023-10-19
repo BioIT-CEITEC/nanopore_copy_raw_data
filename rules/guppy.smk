@@ -20,6 +20,11 @@ rule align:
             guppy_version = guppy_version,
     script: "../wrappers/align/script.py"
 
-
 rule SV_calling:
+    input: # SAM, BAM file
+        "alignment_output/{experiment}/fastq_runid_2fdae66b28c95c27857e236709f82e78094d4aac_0_0.sam" # different name, change!!
+    output:
+        "SV_calling_output/{experiment}/variants.vcf"
+    conda: 
+        "svim_env" # installed with conda create -n svim_env --channel bioconda svim
     script: "../wrappers/SV_calling/script.py"
