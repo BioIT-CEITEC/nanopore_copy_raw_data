@@ -13,11 +13,13 @@ from snakemake.shell import shell
 
 shell.executable("/bin/bash")
 #TODO logging
+genome = str(snakemake.params.genome_path)
+experiment = str(snakemake.wildcards.experiment)
 
-command = "svim alignment SV_calling_output" + \ 
-"alignment_output/{experiment}/fastq_runid_2fdae66b28c95c27857e236709f82e78094d4aac_0_0.sam" 
+command = f"svim alignment SV_calling_output alignment_output/{experiment}/alignment_sorted.bam {genome}" 
 
-#  SVIM.py alignment [options] working_dir bam_file
-# svim alignment --help
+# svim alignment SV_calling_output alignment_output/reads/alignment_sorted.bam "/home/lucka/nanopore_workflows/all_reads/chr17.fas"
+# command vys funguje 
+
 shell(command)
 

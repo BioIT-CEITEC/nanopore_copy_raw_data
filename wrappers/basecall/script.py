@@ -21,7 +21,7 @@ flowcell_suffix_map = {
 }
 
 config_version = config_version_map[snakemake.params.data_type]
-basecaller = "/usr/local/share/apps/ont-guppy-cpu/bin/guppy_basecaller"
+basecaller = str(snakemake.params.basecaller)
 reads_folder = str(snakemake.wildcards.reads_folder)
 guppy_version = str(snakemake.params.guppy_version)
 data_type = str(snakemake.params.data_type)
