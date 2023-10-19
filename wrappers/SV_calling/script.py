@@ -16,10 +16,7 @@ shell.executable("/bin/bash")
 genome = str(snakemake.params.genome_path)
 experiment = str(snakemake.wildcards.experiment)
 
-command = f"svim alignment SV_calling_output alignment_output/{experiment}/alignment_sorted.bam {genome}" 
-
-# svim alignment SV_calling_output alignment_output/reads/alignment_sorted.bam "/home/lucka/nanopore_workflows/all_reads/chr17.fas"
-# command vys funguje 
+command = f"svim alignment SV_calling_output/{experiment} alignment_output/{experiment}/alignment_sorted.bam {genome}" 
 
 shell(command)
 

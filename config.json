@@ -1,6 +1,7 @@
 {
     "experiment_folders":["reads"],
-    "reference_genome_path":"reference_genomes/mhv_virus/ncbi_dataset/data/GCF_003971785.1/GCF_003971785.1_ASM397178v1_genomic.fna",
+    "genome_path":"/home/lucka/nanopore_workflows/all_reads/chr17.fas",
+    "basecaller":"/usr/local/share/apps/ont-guppy-cpu/bin/guppy_basecaller", 
     "guppy_version":"ont-guppy-cpu",
     //ont-guppy-cpu, ont-guppy (for gpu),
     "data_type":"rna", 
