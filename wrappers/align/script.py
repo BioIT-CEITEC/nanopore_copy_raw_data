@@ -18,8 +18,12 @@ command = "./"+str(snakemake.params.guppy_version)+\
         " --align_ref " + str(snakemake.params.genome_path) 
 
 shell(command)
-shell("samtools view -b -S alignment_output/{experiment}/*.sam > alignment.bam")
-shell("samtools sort 'alignment_output/{experiment}/alignment.bam' -o 'alignment_output/{experiment}/alignment_sorted.bam'")
-shell("samtools index 'alignment_output/{experiment}/alignment_sorted.bam'")
 
+shell("ls alignment_output/{experiment}/*.sam | parallel 'samtools view -b {} > {.}.bam'") # to bam file
+shell("ls alignment_output/{experiment}/*.bam | parallel 'samtools sort {} > {.}_sorted.bam'")
+shell("ls alignment_output/{experiment}/*_sorted.bam | parallel 'samtools index {}'")
 
+# Commands in my commandline
+""" ls alignment_output/reads/*.sam | parallel 'samtools view -b {} > {.}.bam'
+ls alignment_output/reads/*.bam | parallel 'samtools sort {} > {.}_sorted.bam'
+ls alignment_output/reads/*_sorted.bam | parallel 'samtools index {}' """
