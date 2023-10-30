@@ -118,7 +118,6 @@ rule align_to_genome:
 		samtools index {output.bam}
 		"""   
 
-
 rule SV_calling:
     input: 
         bam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam'
