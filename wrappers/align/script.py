@@ -17,6 +17,8 @@ command = "./"+str(snakemake.params.guppy_version)+\
         " --save_path alignment_output/"+ experiment+\
         " --align_ref " + str(snakemake.params.genome_path) 
 
+#./ont-guppy-cpu/bin/guppy_aligner --input_path basecalling_output/reads --save_path alignment_output/reads --align_ref "/home/lucka/nanopore_workflows/all_reads/chr17.fas"
+
 shell(command)
 
 shell("ls alignment_output/{experiment}/*.sam | parallel 'samtools view -b {} > {.}.bam'") # to bam file

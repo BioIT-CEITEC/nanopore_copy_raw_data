@@ -20,7 +20,8 @@ flowcell_suffix_map = {
         'mk1c':'_mk1c'
 }
 
-config_version = config_version_map[snakemake.params.data_type]
+#config_version = config_version_map[snakemake.params.data_type] #TODO repare better config
+config_version = '9.4.1'
 basecaller = str(snakemake.params.basecaller)
 reads_folder = str(snakemake.wildcards.reads_folder)
 guppy_version = str(snakemake.params.guppy_version)

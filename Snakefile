@@ -12,6 +12,6 @@ basecaller = config['basecaller']
     input: expand("alignment_output/{folder}/alignment_summary.txt", folder=experiment_folders) """
 
 rule all:
-    input: expand("SV_calling_output/{folder}/variants.vcf", folder=experiment_folders)
-
+    #input: expand("SV_calling_output/{folder}/variants.vcf", folder=experiment_folders) # with SV
+    input: expand("alignment_output/{folder}/alignment_summary.txt", folder=experiment_folders)
 include: "rules/guppy.smk"
