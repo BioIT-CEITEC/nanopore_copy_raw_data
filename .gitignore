@@ -160,9 +160,11 @@ cython_debug/
 #.idea/
 
 #custom
-all_reads/
+data/
 ont-guppy/
 ont-guppy-cpu/
 dag.svg
 metadata/
-
+environments/
+references/
+outputs/
