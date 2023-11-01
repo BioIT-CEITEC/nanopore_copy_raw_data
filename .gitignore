@@ -168,3 +168,4 @@ metadata/
 environments/
 references/
 outputs/
+.snakemake/

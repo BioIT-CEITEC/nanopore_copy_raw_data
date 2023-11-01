@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-rule basecall:
-=======
 # Download the guppy basecaller software
 # Put your fast5 files into the data/<experiment_name>/ folder
 # Put your genome reference into the references folder
@@ -39,29 +36,9 @@ rule basecalling:
 # /usr/local/share/apps/ont-guppy-cpu/bin/guppy_basecaller --flowcell "FLO-MIN106" --kit "SQK-LSK108" --save_path outputs/basecalling/reads/guppy/ --input_path data/reads
       
 rule merge_fastq_files:
->>>>>>> Stashed changes
     input:
         'all_reads/{reads_folder}'
     output:
-<<<<<<< Updated upstream
-        "basecalling_output/{reads_folder}/sequencing_summary.txt"
-    params: quality = quality,
-            bps = bps,
-            data_type = data_type,
-            guppy_version = guppy_version,
-            flowcell = flowcell,
-            basecaller = basecaller
-    script: "../wrappers/basecall/script.py"
-
-rule align:
-    input:
-        "basecalling_output/{experiment}/sequencing_summary.txt"
-    output:
-        "alignment_output/{experiment}/alignment_summary.txt"
-    params: genome_path = genome_path,
-            guppy_version = guppy_version
-    script: "../wrappers/align/script.py"
-=======
         "outputs/basecalling/{experiment_name}/guppy/reads.fastq"
     conda:
         "../envs/merge_fastq.yaml"
@@ -101,7 +78,6 @@ rule align_to_genome:
 			> {output.bam}  
 		samtools index {output.bam}
 		"""   
->>>>>>> Stashed changes
 
 
 # rule SV_calling:
