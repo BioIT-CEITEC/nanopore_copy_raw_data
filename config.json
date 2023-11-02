@@ -1,7 +1,7 @@
 {
     "experiment_folders":["reads"],
-    "reference_path":"Y:/share/710000-CEITEC/713000-cmm/713016-bioit/base/workspace/lucka/nanopore_workflows/references",
-    "basecaller_location":"/mnt/ssd/ssd_1/resources/guppy/ont-guppy-cpu/bin/guppy_basecaller", 
+    "reference_path":"references/chr17.fas",
+    "basecaller_location":"/usr/local/share/apps/ont-guppy-cpu/bin/guppy_basecaller", 
     "flowcell":"FLO-MIN106", 
     //None, prom, mk1c,
     "kit":"SQK-LSK108",

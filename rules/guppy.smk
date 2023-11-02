@@ -37,7 +37,9 @@ rule basecalling:
       
 rule merge_fastq_files:
     input:
-        'all_reads/{reads_folder}'
+        #basecalling_done='outputs/basecalling/{experiment_name}/guppy/sequencing_summary.txt'
+        'outputs/basecalling/{experiment_name}/guppy/sequencing_summary.txt'
+
     output:
         "outputs/basecalling/{experiment_name}/guppy/reads.fastq"
     conda:
@@ -48,7 +50,10 @@ rule merge_fastq_files:
         else cat outputs/basecalling/{wildcards.experiment_name}/guppy/fastq_runid*.fastq > {output}; fi
         """
 
-#cat outputs/basecalling/reads/guppy/fastq_runid*.fastq > "outputs/basecalling/reads/guppy/reads.fastq"
+""" 
+if [ -d "outputs/basecalling/reads/guppy/pass" ]; then cat "outputs/basecalling/reads/guppy/pass/fastq_runid*.fastq" > "outputs/basecalling/reads/guppy/reads.fastq"; \
+else cat outputs/basecalling/reads/guppy/fastq_runid*.fastq > "outputs/basecalling/reads/guppy/reads.fastq"; fi 
+"""
 
 rule align_to_genome:
     input:
@@ -73,23 +78,26 @@ rule align_to_genome:
 			--secondary=no \
 			{params.reference_path} \
 			{input.reads} \
-			| samtools view -b - \
+			| samtools view -bh - \
 			| samtools sort --threads {threads} \
 			> {output.bam}  
 		samtools index {output.bam}
 		"""   
 
 
-# rule SV_calling:
-#     input: 
-#         "outputs/alignment/{experiment_name}/minimap2/reads-align.genome.sorted.bam" 
-#     output:
-#         "outputs/sv_calling/{experiment_name}/variants.vcf"
-#     params: reference_path = snakemake.params.reference_path
-#     conda: 
-#         "../envs/svim_environment.yaml"
-#     #script: "../wrappers/SV_calling/script.py"
-#     shell:
-#         """
-#         svim alignment outputs/sv_calling//{experiment_name} outputs/alignment/{experiment_name}/minimap2/reads-align.genome.sorted.bam {input.reference_path} 
-#         """
+rule SV_calling:
+    input: 
+        bam = 'outputs/alignment/{experiment_name}/minimap2/reads-align.genome.sorted.bam'
+    output:
+        "outputs/sv_calling/{experiment_name}/variants.vcf"
+    params: reference_path = config["reference_path"]
+    conda: 
+        "../envs/svim_environment.yaml"
+    #script: "../wrappers/SV_calling/script.py"
+    shell:
+        """
+        svim alignment outputs/sv_calling/{wildcards.experiment_name} {input.bam} {params.reference_path} 
+        """
+
+# svim alignment outputs/sv_calling/reads 'outputs/alignment/reads/minimap2/reads-align.genome.sorted.bam' "references/chr17.fas"
+# sniffles --input 'outputs/alignment/reads/minimap2/reads-align.genome.sorted.bam' -v "outputs/sv_calling/reads/variants.vcf"
