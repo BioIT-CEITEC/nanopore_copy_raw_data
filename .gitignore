@@ -165,4 +165,9 @@ ont-guppy/
 ont-guppy-cpu/
 dag.svg
 metadata/
+wrappers/
+.snakemake/
+data/
+outputs/
+references/
 
