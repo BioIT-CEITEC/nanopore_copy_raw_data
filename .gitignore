@@ -160,14 +160,13 @@ cython_debug/
 #.idea/
 
 #custom
-all_reads/
+data/
 ont-guppy/
 ont-guppy-cpu/
 dag.svg
 metadata/
-wrappers/
-.snakemake/
-data/
-outputs/
+envs/
 references/
-
+outputs/
+.snakemake/
+all_reads/
