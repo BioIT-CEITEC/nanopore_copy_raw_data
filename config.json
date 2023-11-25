@@ -1,7 +1,9 @@
 {
-    "experiment_folders":["reads"],
+    "experiment_folders":["exp1"],
     "reference_path":"references/chr17.fas",
-    "basecaller_location":"/usr/local/share/apps/ont-guppy-cpu/bin/guppy_basecaller", 
+    // "basecaller_location":"/usr/local/share/apps/ont-guppy-cpu/bin/guppy_basecaller", 
+    "basecaller_location":"ont-guppy-cpu/bin/guppy_basecaller", 
+
     "flowcell":"FLO-MIN106", 
     //None, prom, mk1c,
     "kit":"SQK-LSK108",

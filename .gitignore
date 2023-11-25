@@ -170,3 +170,5 @@ references/
 outputs/
 .snakemake/
 all_reads/
+external_data/
+ont-guppy*
