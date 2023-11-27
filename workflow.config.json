@@ -1,0 +1,49 @@
+{
+    "workflow_description": {
+      "name":"nanopore_workflows",
+      "version": 1.0,
+      "label":"Basecalling, alignment, and SV calling",
+      "type":"unknown",
+      "inputs":"{run_dir}/*",
+      "outputs":[
+        "raw_fastq/{sample}*fastq*"
+      ],
+      "run_parameters": {
+        "cpu": 30,
+        "memory": 128
+      },
+      "run_outputs":[
+        "{library}/sequencing_run_info/*"
+      ]
+    },
+    "general_params": [
+      "sample_name",
+    ],
+    "gui_params" : {
+      "primary": {
+        "UMI": {
+          "label": "UMI",
+          "type": "enum",
+          "default": "no_umi",
+          "list": {
+            "no_umi": "No UMI",
+            "BRONCO": "BRONCO",
+            "TruSight_Oncology": "TruSight Oncology UMI"
+          }
+        }
+      },
+      "detailed": {
+        "no_lane_splitting": {
+          "label": "No lane splitting",
+          "type": "bool",
+          "default": true
+        },
+        "additional_options": {
+          "label": "Additional options to bcl2fastq call",
+          "type": "string",
+          "default": ""
+        }
+      }
+    }
+  }
+  
