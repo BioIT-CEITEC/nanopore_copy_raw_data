@@ -1,5 +1,5 @@
 from pathlib import Path
-
+configfile: "config.json"
 GLOBAL_REF_PATH = config["globalResources"]
 
 # Reference processing
