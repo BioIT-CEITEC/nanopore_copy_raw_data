@@ -34,12 +34,20 @@ def get_exp_info(library_name):
         'save_path':'outputs/basecalling/'+library_name+'/guppy/',
     }
 
+rule get_basecaller:
+    output: f"ont-guppy/bin/guppy_basecaller"
+    shell:
+        f"""
+        wget https://cdn.oxfordnanoportal.com/software/analysis/ont-guppy_6.4.6_linux64.tar.gz
+        tar -xf ont-guppy_6.4.6_linux64.tar.gz
+        """
+
 rule basecalling:
     input: 
         #TODO take only pass?
-        library_path = 'data/{library_name}/fast5_pass',
+        library_path = config["run_dir"] + "/fast5_pass",
         #TODO generalize to cpu or gpu
-        basecaller_location = "basecallers/ont-guppy-cpu/bin/guppy_basecaller",
+        basecaller_location = "ont-guppy/bin/guppy_basecaller",
     output:
         'outputs/basecalling/{library_name}/guppy/sequencing_summary.txt'
     params:
@@ -84,17 +92,17 @@ if [ -d "outputs/basecalling/reads/guppy/pass" ]; then cat "outputs/basecalling/
 else cat outputs/basecalling/reads/guppy/fastq_runid*.fastq > "outputs/basecalling/reads/guppy/reads.fastq"; fi 
 """
 
-def get_reference():
-    files = glob.glob('references/*.fa*')
-    assert len(files) == 1, 'Number of found references !=1'
-    return files[0]
+# def get_reference():
+#     files = glob.glob('references/*.fa*')
+#     assert len(files) == 1, 'Number of found references !=1'
+#     return files[0]
 
 rule align_to_genome:
     input:
         #reads="outputs/basecalling/{library_name}/guppy/reads.fastq.gz"
         reads="outputs/basecalling/{library_name}/guppy/reads.fastq"
     params: 
-        reference_path = get_reference()
+        reference_path = reference_path
     output:
         bam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam',
         bai = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam.bai',
@@ -123,7 +131,7 @@ rule SV_calling:
         bam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam'
     output:
         "outputs/sv_calling/{library_name}/variants.vcf"
-    params: reference_path = get_reference(),
+    params: reference_path = reference_path,
     conda: 
         "../envs/svim_environment.yaml"
     #script: "../wrappers/SV_calling/script.py"
