@@ -2,6 +2,8 @@ from pathlib import Path
 configfile: "config.json"
 #GLOBAL_REF_PATH = config["globalResources"] #TODO repair this
 GLOBAL_REF_PATH = "/mnt/share/share/710000-CEITEC/713000-cmm/713016-bioit/base/references_backup/"
+GLOBAL_TMPD_PATH = config["globalTmpdPath"]
+
 #Reference processing
 
 # if config["libraries"][0]["lib_ROI"] != "wgs":
@@ -27,13 +29,13 @@ GLOBAL_REF_PATH = "/mnt/share/share/710000-CEITEC/713000-cmm/713016-bioit/base/r
 #reference_directory = os.path.join(GLOBAL_REF_PATH,config["organism"],config["reference"])
 ref_type = list(config["libraries"].values())[0]["reference"]
 reference_path = os.path.join(GLOBAL_REF_PATH, "homo_sapiens", ref_type, "seq", ref_type, ".fa")
+basecaller_location = os.path.join(GLOBAL_TMPD_PATH, "ont-guppy-cpu/bin/guppy_basecaller")
 
 include: "rules/guppy.smk"
 
 rule all:
     input:
-        #expand('outputs/alignment/{folder}/minimap2/reads-align.genome.sorted.bam.bai', folder = config["experiment_folders"])
-        # expand( "outputs/sv_calling/{folder}/variants.vcf", folder = config["experiment_folders"])
+        expand("outputs/sv_calling/{library_name}/variants.vcf", library_name = config["run_dir"])
         #TODO folder is not the right expand!! We want experiment name, not library name
-        expand("outputs/basecalling/{library_name}/guppy/sequencing_summary.txt", library_name = config["run_dir"])
+        #expand("outputs/basecalling/{library_name}/guppy/sequencing_summary.txt", library_name = config["run_dir"])
 

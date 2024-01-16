@@ -11,7 +11,7 @@ import os
 #TODO add script to download cpu vs gpu version of guppy,
 
 def get_exp_info(library_name):
-    pattern = os.path.join('data', library_name, 'report_*.json')
+    pattern = os.path.join(library_name, 'report_*.json')
     files = glob.glob(pattern)
     assert len(files) == 1, 'Number of configs found != 1'
 
@@ -34,20 +34,34 @@ def get_exp_info(library_name):
         'save_path':'outputs/basecalling/'+library_name+'/guppy/',
     }
 
-rule get_basecaller:
-    output: f"ont-guppy/bin/guppy_basecaller"
+# TODO extrahovat do params 
+rule download_basecaller_tar:
+    output: '/tmp/ont-guppy-cpu_6.4.6_linux64.tar.gz'
     shell:
         f"""
-        wget https://cdn.oxfordnanoportal.com/software/analysis/ont-guppy_6.4.6_linux64.tar.gz
-        tar -xf ont-guppy_6.4.6_linux64.tar.gz
+        wget -P {GLOBAL_TMPD_PATH} https://cdn.oxfordnanoportal.com/software/analysis/ont-guppy-cpu_6.4.6_linux64.tar.gz
         """
+
+# wget -P /tmp https://cdn.oxfordnanoportal.com/software/analysis/ont-guppy-cpu_6.4.6_linux64.tar.gz
+# tar -xf /tmp/ont-guppy-cpu_6.4.6_linux64.tar.gz /tmp/ont-guppy/
+        
+rule extract_basecaller:
+    input:'/tmp/ont-guppy-cpu_6.4.6_linux64.tar.gz'
+    output: basecaller_location
+    # params: extract_path = f"{GLOBAL_TMPD_PATH}/ont-guppy/"
+    shell:
+        """
+        cd /tmp ;
+        tar -xf {input}
+        """
+
 
 rule basecalling:
     input: 
         #TODO take only pass?
         library_path = config["run_dir"] + "/fast5_pass",
         #TODO generalize to cpu or gpu
-        basecaller_location = "ont-guppy/bin/guppy_basecaller",
+        basecaller_location = basecaller_location,
     output:
         'outputs/basecalling/{library_name}/guppy/sequencing_summary.txt'
     params:
@@ -65,12 +79,29 @@ rule basecalling:
             --trim_strategy none \
             --save_path {params.save_path} \
             --recursive \
-            --gpu_runners_per_device 1 \
             --num_callers {threads} \
             --chunks_per_runner 512 \
             --calib_detect \
             --input_path {input.library_path} \
+            -q 0 \
+            2>&1; \
         """
+
+        # """
+        # {input.basecaller_location} \
+        #     --flowcell {params.flowcell} \
+        #     --kit {params.kit} \
+        #     --records_per_fastq 0 \
+        #     --trim_strategy none \
+        #     --save_path {params.save_path} \
+        #     --recursive \
+        #     --gpu_runners_per_device 1 \
+        #     --num_callers {threads} \
+        #     --chunks_per_runner 512 \
+        #     --calib_detect \
+        #     --input_path {input.library_path} \
+        #     2>&1; \
+        # """
 
 rule merge_fastq_files:
     input:
@@ -87,11 +118,6 @@ rule merge_fastq_files:
         else cat outputs/basecalling/{wildcards.library_name}/guppy/fastq_runid*.fastq > {output}; fi
         """
 
-""" 
-if [ -d "outputs/basecalling/reads/guppy/pass" ]; then cat "outputs/basecalling/reads/guppy/pass/fastq_runid*.fastq" > "outputs/basecalling/reads/guppy/reads.fastq"; \
-else cat outputs/basecalling/reads/guppy/fastq_runid*.fastq > "outputs/basecalling/reads/guppy/reads.fastq"; fi 
-"""
-
 # def get_reference():
 #     files = glob.glob('references/*.fa*')
 #     assert len(files) == 1, 'Number of found references !=1'
@@ -99,7 +125,6 @@ else cat outputs/basecalling/reads/guppy/fastq_runid*.fastq > "outputs/basecalli
 
 rule align_to_genome:
     input:
-        #reads="outputs/basecalling/{library_name}/guppy/reads.fastq.gz"
         reads="outputs/basecalling/{library_name}/guppy/reads.fastq"
     params: 
         reference_path = reference_path
