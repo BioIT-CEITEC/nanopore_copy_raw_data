@@ -1,14 +1,11 @@
 import json
 import glob
 import os
-# Download the guppy basecaller software
-# Put your fast5 files into the data/<experiment_name>/ folder
-# Put your genome reference into the references folder
 
 # TODO incorporate dorado
 # https://cdn.oxfordnanoportal.com/software/analysis/dorado-0.4.1-linux-x64.tar.gz
 #TODO add option to copy fastq files from online basecalling,
-#TODO add script to download cpu vs gpu version of guppy,
+#TODO add option to download cpu vs gpu version of guppy,
 
 def get_exp_info(library_name):
     pattern = os.path.join(library_name, 'report_*.json')
@@ -65,6 +62,7 @@ rule basecalling:
     output:
         'outputs/basecalling/{library_name}/guppy/sequencing_summary.txt'
     params:
+        #exp_info = get_exp_info(wildcards.library_name)
         kit = lambda wildcards: get_exp_info(wildcards.library_name)['kit'],
         flowcell = lambda wildcards: get_exp_info(wildcards.library_name)['flowcell'],
         save_path = lambda wildcards: get_exp_info(wildcards.library_name)['save_path'],
@@ -105,9 +103,7 @@ rule basecalling:
 
 rule merge_fastq_files:
     input:
-        #basecalling_done='outputs/basecalling/{library_name}/guppy/sequencing_summary.txt'
         'outputs/basecalling/{library_name}/guppy/sequencing_summary.txt'
-
     output:
         "outputs/basecalling/{library_name}/guppy/reads.fastq"
     conda:
@@ -122,6 +118,9 @@ rule merge_fastq_files:
 #     files = glob.glob('references/*.fa*')
 #     assert len(files) == 1, 'Number of found references !=1'
 #     return files[0]
+
+from pathlib import Path
+assert Path(reference_path).exists()
 
 rule align_to_genome:
     input:
@@ -150,7 +149,8 @@ rule align_to_genome:
 			| samtools sort --threads {threads} \
 			> {output.bam}  
 		samtools index {output.bam}
-		"""   
+		"""
+  
 
         #samtools view -h -o {output.sam} {output.bam}
         # samtools view -h -o 'outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2a/reads-align.genome.sorted.sam' 'outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2a/reads-align.genome.sorted.bam'
@@ -164,7 +164,7 @@ rule SV_calling:
     input: 
         bam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam'
     output:
-        'outputs/sv_calling/{library_name}/variants.vcf'
+        vcf = 'outputs/sv_calling/{library_name}/variants.vcf'
     params: reference_path = reference_path,
     conda: 
         "../envs/svim_environment.yaml"
