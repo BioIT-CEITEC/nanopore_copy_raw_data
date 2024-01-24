@@ -131,6 +131,7 @@ rule align_to_genome:
     output:
         bam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam',
         bai = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam.bai',
+        #sam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.sam',
     conda:
         "../envs/alignment.yaml"
     threads: 32
@@ -145,21 +146,28 @@ rule align_to_genome:
 			--secondary=no \
 			{params.reference_path} \
 			{input.reads} \
-			| samtools view -bh - \
+			| samtools view -bh -\
 			| samtools sort --threads {threads} \
 			> {output.bam}  
 		samtools index {output.bam}
 		"""   
 
+        #samtools view -h -o {output.sam} {output.bam}
+        # samtools view -h -o 'outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2a/reads-align.genome.sorted.sam' 'outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2a/reads-align.genome.sorted.bam'
+
+
+# minimap2 -x splice -a -t 30 -u b -p 1 --secondary=no /mnt/share/share/710000-CEITEC/713000-cmm/713016-bioit/base/references_backup/homo_sapiens/GRCh38-p10/seq/GRCh38-p10.fa outputs/basecalling/20220609_1405_MN16014_ais607_4d08b843/guppy/reads.fastq | samtools view -bh - | samtools sort --threads 30 > outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2/reads-align.genome.sorted.bam  
+# samtools index outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2/reads-align.genome.sorted.bam
+# works in command line 
+
 rule SV_calling:
     input: 
         bam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam'
     output:
-        "outputs/sv_calling/{library_name}/variants.vcf"
+        'outputs/sv_calling/{library_name}/variants.vcf'
     params: reference_path = reference_path,
     conda: 
         "../envs/svim_environment.yaml"
-    #script: "../wrappers/SV_calling/script.py"
     shell:
         """
         svim alignment outputs/sv_calling/{wildcards.library_name} {input.bam} {params.reference_path} 

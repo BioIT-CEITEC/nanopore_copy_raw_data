@@ -28,14 +28,15 @@ GLOBAL_TMPD_PATH = config["globalTmpdPath"]
 
 #reference_directory = os.path.join(GLOBAL_REF_PATH,config["organism"],config["reference"])
 ref_type = list(config["libraries"].values())[0]["reference"]
-reference_path = os.path.join(GLOBAL_REF_PATH, "homo_sapiens", ref_type, "seq", ref_type, ".fa")
+reference_path = os.path.join(GLOBAL_REF_PATH, "homo_sapiens", ref_type, "seq", ref_type + ".fa")
 basecaller_location = os.path.join(GLOBAL_TMPD_PATH, "ont-guppy-cpu/bin/guppy_basecaller")
 
 include: "rules/guppy.smk"
 
 rule all:
     input:
-        expand("outputs/sv_calling/{library_name}/variants.vcf", library_name = config["run_dir"])
+        # expand("outputs/sv_calling/{library_name}/variants.vcf", library_name = config["run_dir"])
+        # expand("outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam", library_name = config["run_dir"])
         #TODO folder is not the right expand!! We want experiment name, not library name
-        #expand("outputs/basecalling/{library_name}/guppy/sequencing_summary.txt", library_name = config["run_dir"])
+        expand("outputs/basecalling/{library_name}/guppy/sequencing_summary.txt", library_name = config["run_dir"])
 
