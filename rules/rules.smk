@@ -38,20 +38,15 @@ rule download_basecaller_tar:
         f"""
         wget -P {GLOBAL_TMPD_PATH} https://cdn.oxfordnanoportal.com/software/analysis/ont-guppy-cpu_6.4.6_linux64.tar.gz
         """
-
-# wget -P /tmp https://cdn.oxfordnanoportal.com/software/analysis/ont-guppy-cpu_6.4.6_linux64.tar.gz
-# tar -xf /tmp/ont-guppy-cpu_6.4.6_linux64.tar.gz /tmp/ont-guppy/
         
 rule extract_basecaller:
     input:'/tmp/ont-guppy-cpu_6.4.6_linux64.tar.gz'
     output: basecaller_location
-    # params: extract_path = f"{GLOBAL_TMPD_PATH}/ont-guppy/"
     shell:
         """
         cd /tmp ;
         tar -xf {input}
         """
-
 
 rule basecalling:
     input: 
@@ -62,7 +57,6 @@ rule basecalling:
     output:
         'outputs/basecalling/{library_name}/guppy/sequencing_summary.txt'
     params:
-        #exp_info = get_exp_info(wildcards.library_name)
         kit = lambda wildcards: get_exp_info(wildcards.library_name)['kit'],
         flowcell = lambda wildcards: get_exp_info(wildcards.library_name)['flowcell'],
         save_path = lambda wildcards: get_exp_info(wildcards.library_name)['save_path'],
@@ -85,22 +79,6 @@ rule basecalling:
             2>&1; \
         """
 
-        # """
-        # {input.basecaller_location} \
-        #     --flowcell {params.flowcell} \
-        #     --kit {params.kit} \
-        #     --records_per_fastq 0 \
-        #     --trim_strategy none \
-        #     --save_path {params.save_path} \
-        #     --recursive \
-        #     --gpu_runners_per_device 1 \
-        #     --num_callers {threads} \
-        #     --chunks_per_runner 512 \
-        #     --calib_detect \
-        #     --input_path {input.library_path} \
-        #     2>&1; \
-        # """
-
 rule merge_fastq_files:
     input:
         'outputs/basecalling/{library_name}/guppy/sequencing_summary.txt'
@@ -114,14 +92,6 @@ rule merge_fastq_files:
         else cat outputs/basecalling/{wildcards.library_name}/guppy/fastq_runid*.fastq > {output}; fi
         """
 
-# def get_reference():
-#     files = glob.glob('references/*.fa*')
-#     assert len(files) == 1, 'Number of found references !=1'
-#     return files[0]
-
-from pathlib import Path
-assert Path(reference_path).exists()
-
 rule align_to_genome:
     input:
         reads="outputs/basecalling/{library_name}/guppy/reads.fastq"
@@ -130,7 +100,6 @@ rule align_to_genome:
     output:
         bam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam',
         bai = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam.bai',
-        #sam = 'outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.sam',
     conda:
         "../envs/alignment.yaml"
     threads: 32
@@ -150,15 +119,6 @@ rule align_to_genome:
 			> {output.bam}  
 		samtools index {output.bam}
 		"""
-  
-
-        #samtools view -h -o {output.sam} {output.bam}
-        # samtools view -h -o 'outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2a/reads-align.genome.sorted.sam' 'outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2a/reads-align.genome.sorted.bam'
-
-
-# minimap2 -x splice -a -t 30 -u b -p 1 --secondary=no /mnt/share/share/710000-CEITEC/713000-cmm/713016-bioit/base/references_backup/homo_sapiens/GRCh38-p10/seq/GRCh38-p10.fa outputs/basecalling/20220609_1405_MN16014_ais607_4d08b843/guppy/reads.fastq | samtools view -bh - | samtools sort --threads 30 > outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2/reads-align.genome.sorted.bam  
-# samtools index outputs/alignment/20220609_1405_MN16014_ais607_4d08b843/minimap2/reads-align.genome.sorted.bam
-# works in command line 
 
 rule SV_calling:
     input: 
@@ -172,6 +132,3 @@ rule SV_calling:
         """
         svim alignment outputs/sv_calling/{wildcards.library_name} {input.bam} {params.reference_path} 
         """
-
-# svim alignment outputs/sv_calling/reads 'outputs/alignment/reads/minimap2/reads-align.genome.sorted.bam' "references/chr17.fas"
-# sniffles --input 'outputs/alignment/reads/minimap2/reads-align.genome.sorted.bam' -v "outputs/sv_calling/reads/variants.vcf"
