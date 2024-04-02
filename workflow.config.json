@@ -6,7 +6,7 @@
       "type":"run_demultiplexing",
       "inputs":"{run_dir}/*",
       "outputs":[
-        "nanopore_run_report.json,
+        "nanopore_run_report.json",
         "raw_*5_files"
       ],
       "run_parameters": {
@@ -19,8 +19,6 @@
     },
     "general_params": [
       "run_dir"
-    ],
-    "gui_params" : {
-    }
+    ]
   }
   
