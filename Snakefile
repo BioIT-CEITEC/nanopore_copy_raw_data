@@ -1,18 +1,17 @@
 from pathlib import Path
 configfile: "config.json"
-GLOBAL_REF_PATH = config["globalResources"] 
-GLOBAL_TMPD_PATH = config["globalTmpdPath"]
-
-#reference_directory = os.path.join(GLOBAL_REF_PATH,config["organism"],config["reference"])
-ref_type = list(config["libraries"].values())[0]["reference"]
-#TODO how to get organism
-reference_path = os.path.join(GLOBAL_REF_PATH, "homo_sapiens", ref_type, "seq", ref_type + ".fa")
-basecaller_location = os.path.join(GLOBAL_TMPD_PATH, "ont-guppy-cpu/bin/guppy_basecaller")
-
-include: "rules/rules.smk"
 
 rule all:
     input:
-        expand("outputs/sv_calling/{library_name}/variants.vcf", library_name = config["run_dir"])
-        #expand("outputs/alignment/{library_name}/minimap2/reads-align.genome.sorted.bam", library_name = config["run_dir"])
-        #expand("outputs/basecalling/{library_name}/guppy/sequencing_summary.txt", library_name = config["run_dir"])
+        expand("{library_name}/nanopore_run_report.json", library_name = list(config["libraries"].keys())[0])
+
+rule mv:
+    output: expand("{library_name}/nanopore_run_report.json", library_name = list(config["libraries"].keys())[0])
+    params: run_dir=config["run_dir"],
+            library_dir= list(config["libraries"].keys())[0]
+    shell:
+        """
+        mkdir {params.library_dir};
+        cp {params.run_dir}/report_*.json {output};
+        mv {params.run_dir}/*5_pass "{params.library_dir}"
+        """

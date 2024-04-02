@@ -1,49 +1,26 @@
 {
     "workflow_description": {
-      "name":"nanopore_workflows",
+      "name":"nanopore_copy_raw_data",
       "version": 1.0,
-      "label":"Basecalling, alignment, and SV calling",
+      "label":"Copy raw signals",
       "type":"run_demultiplexing",
       "inputs":"{run_dir}/*",
       "outputs":[
-        "raw_fastq/{sample}*fastq*"
+        "nanopore_run_report.json,
+        "raw_*5_files"
       ],
       "run_parameters": {
-        "cpu": 30,
-        "memory": 128
+        "cpu": 1,
+        "memory": 4
       },
       "run_outputs":[
         "{library}/sequencing_run_info/*"
       ]
     },
     "general_params": [
-      "sample_name",
       "run_dir"
     ],
     "gui_params" : {
-      "primary": {
-        "lib_ROI": {
-          "label": "Regions of interest",
-          "type": "enum",
-          "default": "wgs",
-          "list": ##INCLUDE:reference_info/lib_ROI.json##
-        },  
-        "reference": {
-          "label": "Genomic Reference",
-          "type": "enum",
-          "default": ##INCLUDE:reference_info/default_reference.json##,
-          "conditions": {
-            "relevance": {
-              "operand": "equal",
-              "negation": false,
-              "values": {
-                "lib_ROI": "wgs"
-              }
-            }
-          },
-          "list": ##INCLUDE:reference_info/reference2.json##
-        }
-      }
     }
   }
   
