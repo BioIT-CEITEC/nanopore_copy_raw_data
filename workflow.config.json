@@ -19,6 +19,8 @@
     },
     "general_params": [
       "run_dir"
-    ]
+    ],
+    "gui_params" : {
+    }
   }
   
