@@ -18,7 +18,9 @@
       ]
     },
     "general_params": [
-      "run_dir"
+      "sample_name",
+      "run_dir",
+      "run_sequencer_type"
     ],
     "gui_params" : {
     }
