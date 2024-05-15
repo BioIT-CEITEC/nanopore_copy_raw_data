@@ -20,7 +20,8 @@
     "general_params": [
       "sample_name",
       "run_dir",
-      "run_sequencer_type"
+      "run_sequencer_type",
+      "i7_name"
     ],
     "gui_params" : {
     }
