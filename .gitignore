@@ -163,9 +163,4 @@ cython_debug/
 .taskrunner/
 kubectl_job_config.yaml
 config.json
-ont-guppy/
-ont-guppy-cpu/
-metadata/
-outputs/
 .snakemake/
-ont-guppy*
