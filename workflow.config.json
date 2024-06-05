@@ -10,8 +10,8 @@
         "raw_*5_files"
       ],
       "run_parameters": {
-        "cpu": 1,
-        "memory": 4
+        "cpu": 30,
+        "memory": 16
       },
       "run_outputs":[
         "{library}/sequencing_run_info/*"
