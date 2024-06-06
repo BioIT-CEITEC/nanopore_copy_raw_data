@@ -29,8 +29,8 @@ else:
 
 rule all:
     input:
-        expand("{library_name}/outputs/{sample_name}/reads_merged.pod5", library_name=library_name, sample_name='test1'),
-        expand("{library_name}/outputs/{sample_name}/nanopore_run_report.json", library_name=library_name, sample_name='test1')
+        expand("{library_name}/outputs/{sample_name}/reads_merged.pod5", library_name=library_name, sample_name=sample_names),
+        expand("{library_name}/outputs/{sample_name}/nanopore_run_report.json", library_name=library_name, sample_name=sample_names)
 
 def list_pod5s_per_sample(run_dir, sample_name):
     if(is_barcoded):
