@@ -69,4 +69,6 @@ rule copy_report:
     output: "{library_name}/outputs/{sample_name}/nanopore_run_report.json"
     shell:
         "cp {input} {output}"
+
+        
         
