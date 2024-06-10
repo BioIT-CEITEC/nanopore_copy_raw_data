@@ -10,6 +10,8 @@ RUN_DIR = config["run_dir"]
 sample_hashes = list(config["libraries"][library_name]["samples"].keys())
 
 barcode_flag = config["libraries"][library_name]["samples"][sample_hashes[0]]["i7_name"]
+sample_names = []
+sample_to_i7 = {}
 
 if barcode_flag == "NON_BARCODED":
     is_barcoded = False
@@ -17,16 +19,9 @@ else:
     is_barcoded = True
     # takes the library name without the ID prefix
     RUN_DIR += "/" + library_name.split('_', 1)[1]
-
-# Same for Barcoded and non barcoded 
-#TODO can we have more libraries
-sample_names = []
-sample_to_i7 = {}
-for sample in sample_hashes:
-    sample_name = config["libraries"][library_name]["samples"][sample]["sample_name"]
-    # check if all sample names from config exists, if not - delete from list sample_names
-    if list_pod5s_per_sample(RUN_DIR, sample_name):
-        sample_names.append(sample_name)
+    # for barcoded create vocabulary with sample_names and barcodes
+    for sample in sample_hashes:
+        sample_name = config["libraries"][library_name]["samples"][sample]["sample_name"]
         sample_to_i7[sample_name] = config["libraries"][library_name]["samples"][sample]["i7_name"]
 
 def list_pod5s_per_sample(run_dir, sample_name):
@@ -36,6 +31,14 @@ def list_pod5s_per_sample(run_dir, sample_name):
         search_pattern = os.path.join(run_dir, sample_name, "*", "pod5_pass", "*.pod5")
     matched_files = glob.glob(search_pattern)
     return matched_files
+    
+# Creation of sample_names list for which we have the data
+#TODO can we have more libraries
+for sample in sample_hashes:
+    sample_name = config["libraries"][library_name]["samples"][sample]["sample_name"]
+    # check if all sample names from config exists, if yes - add the names to the list
+    if list_pod5s_per_sample(RUN_DIR, sample_name):
+        sample_names.append(sample_name)
 
 rule all:
     input:
