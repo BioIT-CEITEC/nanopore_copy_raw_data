@@ -6,8 +6,8 @@
       "type":"run_demultiplexing",
       "inputs":"{run_dir}/*",
       "outputs":[
-        "{library_name}/outputs/{sample_name}/nanopore_run_report.json",
-        "{library_name}/outputs/{sample_name}/reads.merged.pod5"
+        "raw_reads/{sample}/{sample}.pod5",
+        "run_report/{sample}/{sample}_report.json"
       ],
       "run_parameters": {
         "cpu": 30,
