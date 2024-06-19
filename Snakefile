@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import glob
+import pandas as pd
 configfile: "config.json"
 
 ##### BioRoot utilities #####
