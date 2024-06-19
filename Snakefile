@@ -54,7 +54,7 @@ def list_pod5s_per_sample(run_dir, sample_name):
 rule all:
     input:
         expand("{library_name}/raw_reads/{sample_name}/{sample_name}.pod5", library_name=library_name, sample_name=sample_tab.sample_name),
-        expand("{library_name}/run_report/{sample_name}/{sample_name}_report.json", library_name=library_name, sample_name=sample_tab.sample_name)
+        expand("{library_name}/run_report/{sample_name}/{sample_name}_report.json", library_name=library_name, sample_name=sample_tab.sample_name),
         "sequencing_run_info/samplesNumberReads.json"
 
 # merge pod5s from one sample and all flowcells in the sample folder 
