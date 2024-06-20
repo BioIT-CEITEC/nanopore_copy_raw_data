@@ -1,41 +1,40 @@
 from pathlib import Path
 import os
 import glob
-import pandas as pd
 configfile: "config.json"
-
-##### BioRoot utilities #####
-module BR:
-    snakefile: gitlab("bioroots/bioroots_utilities", path="bioroots_utilities.smk",branch="master")
-    config: config
-
-use rule * from BR as other_*
+import pandas as pd
 
 ##### Config processing #####
-
-sample_tab = BR.load_sample()
-
-wildcard_constraints:
-    sample_name = "|".join(sample_tab.sample_name)
 
 # BARCODED / NON BARCODED
 # TODO can be more libraries? 
 library_name = list(config["libraries"].keys())[0]
 RUN_DIR = config["run_dir"]
-sample_hashes = list(config["libraries"][library_name]["samples"].keys())
 
-barcode_flag = config["libraries"][library_name]["samples"][sample_hashes[0]]["i7_name"]
-#sample_names = []
-sample_to_i7 = {}
+##### Sample table creation #####
+def get_panda_sample_tab_from_config_one_lib(lib_name):
+    lib_config = config["libraries"][lib_name]
+    sample_tab = pd.DataFrame.from_dict(lib_config["samples"],orient="index")
+    sample_tab["library"] = lib_name
 
-# Creation of sample_names list for which we have the data
-#TODO can we have more libraries
-for sample in sample_tab.sample_name:
-    sample_to_i7[sample] = config["libraries"][library_name]["samples"][sample]["i7_name"]
+    sample_tab['sample_ID'] = sample_tab.index.astype(str)
+    sample_tab['sample_name_full'] = sample_tab['sample_name'] + '___' + sample_tab['sample_ID']
+    return sample_tab
 
-for sample_hash in sample_hashes:
-    sample_name = config["samples"][sample_hash]["sample_name"]
-    hash_to_path[sample_hash]=os.path.join(library_name, "raw_reads", sample_name, sample_name + ".pod5") #TODO add {library_name} when copy to copy_raw_data
+sample_tab = get_panda_sample_tab_from_config_one_lib(library_name)
+
+wildcard_constraints:
+    sample_name = "|".join(sample_tab.sample_name)
+
+sample_to_i7 = dict(zip(sample_tab.sample_name, sample_tab.i7_name))
+print(sample_tab)
+
+#TODO easier create the 
+# for sample_hash in sample_tab.sample_ID:
+#     sample_name = config["libraries"][library_name]["samples"][sample_hash]["sample_name"]
+#     hash_to_path[sample_hash]=os.path.join(library_name, "raw_reads", sample_name, sample_name + ".pod5") #TODO add {library_name} when copy to copy_raw_data
+
+barcode_flag = sample_tab.i7_name[0]
 
 if barcode_flag == "NON_BARCODED":
     is_barcoded = False
@@ -79,7 +78,8 @@ rule pod5merge:
 rule createSamplesNumberReads:
     input: pod5_merged = expand("raw_reads/{sample_name}/{sample_name}.pod5", sample_name = "test1")
     output: "sequencing_run_info/samplesNumberReads.json"
-    params: hash_to_path = hash_to_path
+    params: sample_tab = sample_tab,
+        library_name = library_name
     conda: "../envs/pod5_merge.yaml"
     script: "wrappers/createSamplesNumberReads.py"
 

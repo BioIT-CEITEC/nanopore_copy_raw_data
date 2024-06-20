@@ -4,7 +4,8 @@ import os
 directory = os.path.dirname(snakemake.output[0])
 os.makedirs(directory, exist_ok=True)
 hash_to_count = {}
-for hash, path in snakemake.params.hash_to_path.items():
+for hash, sample_name in zip(snakemake.params.sample_tab.sample_ID, snakemake.params.sample_tab.sample_name):
+    path = os.path.join(snakemake.params.library_name, "raw_reads", sample_name, sample_name + ".pod5")
     print("Check for pod5 file")
     print(os.path.exists(path))
     if(os.stat(path).st_size == 0):
