@@ -14,7 +14,7 @@
       "memory": 16
     }, 
     "run_outputs":[
-      "sequencing_run_info/*"
+      "{library}/sequencing_run_info/*"
     ]  
   },
   "general_params": [
