@@ -55,7 +55,7 @@ rule all:
     input:
         expand("{library_name}/raw_reads/{sample_name}/{sample_name}.pod5", library_name=library_name, sample_name=sample_tab.sample_name),
         expand("{library_name}/run_report/{sample_name}/{sample_name}_report.json", library_name=library_name, sample_name=sample_tab.sample_name),
-        "sequencing_run_info/samplesNumberReads.json"
+        expand("{library_name}/sequencing_run_info/samplesNumberReads.json", library_name=library_name)
 
 # merge pod5s from one sample and all flowcells in the sample folder 
 rule pod5merge:
@@ -76,11 +76,11 @@ rule pod5merge:
         """
 
 rule createSamplesNumberReads:
-    input: pod5_merged = expand("raw_reads/{sample_name}/{sample_name}.pod5", sample_name = "test1")
-    output: "sequencing_run_info/samplesNumberReads.json"
+    input: pod5_merged = expand("{library_name}/raw_reads/{sample_name}/{sample_name}.pod5", library_name = library_name, sample_name = sample_tab.sample_name)
+    output: "{library_name}/sequencing_run_info/samplesNumberReads.json"
     params: sample_tab = sample_tab,
         library_name = library_name
-    conda: "../envs/pod5_merge.yaml"
+    conda: "envs/pod5_merge.yaml"
     script: "wrappers/createSamplesNumberReads.py"
 
 def get_sample_report_path(run_dir, sample_name):

@@ -1,4 +1,5 @@
 from pod5 import Reader
+import pandas as pd
 import json
 import os
 directory = os.path.dirname(snakemake.output[0])

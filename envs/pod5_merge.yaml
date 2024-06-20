@@ -4,3 +4,4 @@ dependencies:
 - numpy<2
 - pip:
   - pod5
+  - pandas 

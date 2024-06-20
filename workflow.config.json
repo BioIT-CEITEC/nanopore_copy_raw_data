@@ -1,29 +1,28 @@
 {
-    "workflow_description": {
-      "name":"nanopore_copy_raw_data",
-      "version": 1.0,
-      "label":"Copy raw signals",
-      "type":"run_demultiplexing",
-      "inputs":"{run_dir}/*",
-      "outputs":[
-        "raw_reads/{sample}/{sample}.pod5",
-        "run_report/{sample}/{sample}_report.json"
-      ],
-      "run_parameters": {
-        "cpu": 30,
-        "memory": 16
-      }, 
-      "run_outputs":[
-        "{library}/sequencing_run_info/*"
-      ]  
-    },
-    "general_params": [
-      "sample_name",
-      "run_dir",
-      "run_sequencer_type",
-      "i7_name"
+  "workflow_description": {
+    "name":"nanopore_copy_raw_data",
+    "version": 1.0,
+    "label":"Copy raw signals",
+    "type":"run_demultiplexing",
+    "inputs":"{run_dir}/*",
+    "outputs":[
+      "raw_reads/{sample}/{sample}.pod5",
+      "run_report/{sample}/{sample}_report.json"
     ],
-    "gui_params" : {
-    }
+    "run_parameters": {
+      "cpu": 30,
+      "memory": 16
+    }, 
+    "run_outputs":[
+      "sequencing_run_info/*"
+    ]  
+  },
+  "general_params": [
+    "sample_name",
+    "run_dir",
+    "run_sequencer_type",
+    "i7_name"
+  ],
+  "gui_params" : {
   }
-  
+}
