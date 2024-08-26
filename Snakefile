@@ -14,7 +14,7 @@ RUN_DIR = config["run_dir"]
 ##### Sample table creation #####
 def get_panda_sample_tab_from_config_one_lib(lib_name):
     lib_config = config["libraries"][lib_name]
-    sample_tab = pd.DataFrame.from_dict(lib_config["samples"],orient="index")
+    sample_tab = pd.DataFrame.from_dict(lib_config["samples"], orient="index")
     sample_tab["library"] = lib_name
 
     sample_tab['sample_ID'] = sample_tab.index.astype(str)
@@ -27,7 +27,6 @@ wildcard_constraints:
     sample_name = "|".join(sample_tab.sample_name)
 
 sample_to_i7 = dict(zip(sample_tab.sample_name, sample_tab.i7_name))
-print(sample_tab)
 
 #TODO easier create the 
 # for sample_hash in sample_tab.sample_ID:
