@@ -13,5 +13,9 @@ for hash, sample_name in zip(snakemake.params.sample_tab.sample_ID, snakemake.pa
         hash_to_count[hash] = 0
     else:
         hash_to_count[hash] = Reader(path).num_reads
+        # number of reads is not 0, but is small - change to 0
+        if(hash_to_count[hash] < 50):
+           hash_to_count[hash] = 0 
+    
 with open(snakemake.output[0], 'w') as file:
     json.dump(hash_to_count, file)
