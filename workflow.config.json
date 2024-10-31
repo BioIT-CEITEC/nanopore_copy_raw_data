@@ -7,8 +7,7 @@
     "inputs":"{run_dir}/*",
     "outputs":[
       "raw_reads/{sample}/{sample}.pod5",
-      "run_report/{sample}/{sample}_report.json",
-      "sequencing_run_info/samplesNumberReads.json"
+      "run_report/{sample}/{sample}_report.json"
     ],
     "run_parameters": {
       "cpu": 30,
