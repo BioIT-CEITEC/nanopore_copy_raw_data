@@ -44,11 +44,13 @@ else:
 
 def list_pod5s_per_sample(run_dir, sample_name):
     if is_barcoded:
-        search_pattern = os.path.join(run_dir, "*", "pod5_pass", sample_to_i7[sample_name], "*.pod5")
+        search_pattern_old = os.path.join(run_dir, "*", "pod5_pass", sample_to_i7[sample_name], "*.pod5")
+        search_pattern_new = os.path.join(run_dir, "*", "pod5", sample_to_i7[sample_name], "*.pod5")
     else:
-        search_pattern = os.path.join(run_dir, sample_name, "*", "pod5_pass", "*.pod5")
-    matched_files = glob.glob(search_pattern)
-    return matched_files
+        search_pattern_old = os.path.join(run_dir, sample_name, "*", "pod5_pass", "*.pod5")
+        search_pattern_new = os.path.join(run_dir, sample_name, "*", "pod5", "*.pod5")
+    matched_files = glob.glob(search_pattern_old) + glob.glob(search_pattern_new)
+    return matched_files 
 
 rule all:
     input:
