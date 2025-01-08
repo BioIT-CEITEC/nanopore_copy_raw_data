@@ -24,5 +24,25 @@
     "i7_name"
   ],
   "gui_params" : {
+    "library_name_correct": {
+      "label": "Correct library name",
+      "info": "Is the library name in sequia correct based on folder in path?",
+      "type": "bool",
+      "default": true
+    },
+    "recipient": {
+      "label": "Name of the parent folder",
+      "info": "Write name of the parent folder for flowcells",
+      "type": "string",
+      "conditions": {
+        "relevance": {
+          "operand": "equal",
+          "negation": true,
+          "values": {
+            "filesender": false
+          }
+        }
+      }
+    }
   }
 }
