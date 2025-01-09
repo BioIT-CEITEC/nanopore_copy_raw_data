@@ -31,7 +31,7 @@
         "type": "bool",
         "default": true
       },
-      "recipient": {
+      "library_name": {
         "label": "Name of the parent folder",
         "info": "Write name of the parent folder for flowcells",
         "type": "string",
@@ -40,7 +40,7 @@
             "operand": "equal",
             "negation": true,
             "values": {
-              "filesender": false
+              "library_name_correct": false
             }
           }
         }
