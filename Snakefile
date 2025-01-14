@@ -26,8 +26,8 @@ sample_tab = get_panda_sample_tab_from_config_one_lib(library_tag)
 # change library name
 if library_name_wrong:
     library_path_name = config["libraries"][library_tag]["library_name"]
-    else: 
-        library_path_name = library_tag
+else: 
+    library_path_name = library_tag
 
 RUN_DIR = config["run_dir"]
 
