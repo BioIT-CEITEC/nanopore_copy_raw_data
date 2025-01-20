@@ -75,13 +75,16 @@ rule pod5merge:
     output: pod5_merged = "{library_path_name}/raw_reads/{sample_name}/{sample_name}.pod5"
     params:
         empty_input=lambda wildcards, input: len(input.pod5s),
-        new_dir="{library_path_name}/raw_reads/{sample_name}"
+        new_dir="{library_path_name}/raw_reads/{sample_name}",
+        is_barcoded=int(is_barcoded)
     conda: "envs/pod5_merge.yaml"
     shell:
         """
         if [ {params.empty_input} -eq 0 ]; then
             mkdir -p {params.new_dir}
             touch {output.pod5_merged}
+        elif [ {params.is_barcoded} -eq 1 ]; then 
+                cp {input.pod5s} {output.pod5_merged}
         else
             pod5 merge {input.pod5s} --output {output.pod5_merged}
         fi
