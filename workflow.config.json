@@ -6,7 +6,7 @@
     "type":"run_demultiplexing",
     "inputs":"{run_dir}/*",
     "outputs":[
-      "raw_reads/{sample}/{sample}.pod5"
+      "raw_reads/{sample}/*"
     ],
     "run_parameters": {
       "cpu": 30,

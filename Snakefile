@@ -72,21 +72,21 @@ rule all:
 # merge pod5s from one sample and all flowcells in the sample folder 
 rule pod5merge:
     input: pod5s = lambda wildcards: list_pod5s_per_sample(RUN_DIR, wildcards.sample_name)
-    output: pod5_merged = "{library_path_name}/raw_reads/{sample_name}/{sample_name}.pod5"
+    output: new_dir="{library_path_name}/raw_reads/{sample_name}",
     params:
         empty_input=lambda wildcards, input: len(input.pod5s),
-        new_dir="{library_path_name}/raw_reads/{sample_name}",
-        is_barcoded=int(is_barcoded)
+        is_barcoded=int(is_barcoded),
+        pod5_merged = "{library_path_name}/raw_reads/{sample_name}/{sample_name}.pod5"
     conda: "envs/pod5_merge.yaml"
     shell:
         """
         if [ {params.empty_input} -eq 0 ]; then
-            mkdir -p {params.new_dir}
-            touch {output.pod5_merged}
+            mkdir -p {output.new_dir}
+            touch {params.pod5_merged}
         elif [ {params.is_barcoded} -eq 1 ]; then 
-                cp {input.pod5s} {output.pod5_merged}
+                cp {input.pod5s} {output.new_dir}
         else
-            pod5 merge {input.pod5s} --output {output.pod5_merged}
+            pod5 merge {input.pod5s} --output {params.pod5_merged}
         fi
         """
 
