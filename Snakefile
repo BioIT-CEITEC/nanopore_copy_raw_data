@@ -65,14 +65,14 @@ def list_pod5s_per_sample(run_dir, sample_name):
 
 rule all:
     input:
-        expand("{library_path_name}/raw_reads/{sample_name}/{sample_name}.pod5", library_path_name=library_path_name, sample_name=sample_tab.sample_name),
+        #expand("{library_path_name}/raw_reads/{sample_name}/{sample_name}.pod5", library_path_name=library_path_name, sample_name=sample_tab.sample_name),
         #expand("{library_path_name}/run_report/{sample_name}/{sample_name}_report.json", library_path_name=library_path_name, sample_name=sample_tab.sample_name),
         expand("{library_path_name}/sequencing_run_info/samplesNumberReads.json", library_path_name=library_path_name)
 
 # merge pod5s from one sample and all flowcells in the sample folder 
 rule pod5merge:
     input: pod5s = lambda wildcards: list_pod5s_per_sample(RUN_DIR, wildcards.sample_name)
-    output: new_dir="{library_path_name}/raw_reads/{sample_name}",
+    output: pod5s_dynamic = dynamic("{library_path_name}/raw_reads/{sample_name}/*.pod5")
     params:
         empty_input=lambda wildcards, input: len(input.pod5s),
         is_barcoded=int(is_barcoded),
@@ -80,18 +80,18 @@ rule pod5merge:
     conda: "envs/pod5_merge.yaml"
     shell:
         """
+        mkdir -p $(dirname {params.pod5_merged})
         if [ {params.empty_input} -eq 0 ]; then
-            mkdir -p {output.new_dir}
             touch {params.pod5_merged}
         elif [ {params.is_barcoded} -eq 1 ]; then 
-                cp {input.pod5s} {output.new_dir}
+            cp {input.pod5s} $(dirname {params.pod5_merged})
         else
             pod5 merge {input.pod5s} --output {params.pod5_merged}
         fi
         """
 
 rule createSamplesNumberReads:
-    input: pod5_merged = expand("{library_path_name}/raw_reads/{sample_name}/{sample_name}.pod5", library_path_name = library_path_name, sample_name = sample_tab.sample_name)
+    input: pod5s = lambda wildcards: expand("{library_path_name}/raw_reads/{sample_name}/*.pod5", library_path_name=library_path_name, sample_name=sample_tab.sample_name)
     output: "{library_path_name}/sequencing_run_info/samplesNumberReads.json"
     params: sample_tab = sample_tab,
         library_path_name = library_path_name
