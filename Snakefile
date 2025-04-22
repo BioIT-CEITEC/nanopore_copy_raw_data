@@ -74,14 +74,15 @@ rule pod5merge:
     input: pod5s = lambda wildcards: list_pod5s_per_sample(RUN_DIR, wildcards.sample_name)
     output: pod5_merged = "{library_path_name}/raw_reads/{sample_name}/{sample_name}.pod5"
     params:
-        empty_input=lambda wildcards, input: len(input.pod5s),
+        input_count = lambda wildcards, input: len(input.pod5s),
         new_dir="{library_path_name}/raw_reads/{sample_name}"
     conda: "envs/pod5_merge.yaml"
     shell:
         """
-        if [ {params.empty_input} -eq 0 ]; then
-            mkdir -p {params.new_dir}
+        if [ {params.input_count} -eq 0 ]; then
             touch {output.pod5_merged}
+        elif [ {params.input_count} -eq 1 ]; then
+            cp {input.pod5s[0]} {output.pod5_merged}
         else
             pod5 merge {input.pod5s} --output {output.pod5_merged}
         fi
