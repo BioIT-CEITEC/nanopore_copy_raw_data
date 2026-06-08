@@ -3,8 +3,9 @@ This is the first step of nanopore pipeline.
 ## Workflow Logic
 The pipeline follows these steps to resolve file paths:
 Input Detection: 
-- For Barcoded runs: It searches RUN_DIR/*/pod5_pass/{barcode}/*.pod5
-- For Non-Barcoded runs: It searches RUN_DIR/{sample_name}/*/pod5_pass/*.pod5
+- For Barcoded runs: It searches `RUN_DIR/*/pod5_pass/{barcode}/*.pod5` or `RUN_DIR/*/pod5/{barcode}/*.pod5`
+- For Non-Barcoded runs: It searches `RUN_DIR/{sample_name}/*/pod5_pass/*.pod5` or `RUN_DIR/{sample_name}/*/pod5/*.pod5`
+pod5 or pod5_pass is based on how new is the instrument
 
 Merging (pod5merge):
 - If 0 files are found: Touches an empty file.
